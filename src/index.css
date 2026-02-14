@@ -15,14 +15,14 @@
   body {
     font-family: 'Inter', system-ui, sans-serif;
     font-weight: 300;
-    color: #111;
-    background: #f8f4ed;
+    color: #222;
+    background: #fff;
     margin: 0;
   }
 
   ::selection {
     background-color: rgba(168, 126, 69, 0.25);
-    color: #111;
+    color: #222;
   }
 }
 
@@ -44,8 +44,8 @@
     @apply inline-flex items-center justify-center gap-2 px-8 py-3.5
            text-white text-sm font-light uppercase tracking-widest
            transition-all duration-500 ease-out;
-    background-color: #111;
-    border: 1px solid #111;
+    background-color: #222;
+    border: 1px solid #222;
   }
   .btn-luxury-dark:hover {
     background-color: #000;

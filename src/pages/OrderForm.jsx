@@ -20,7 +20,7 @@ export default function OrderForm() {
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
         <p className="text-lg text-gray-400 font-light">Votre panier est vide</p>
-        <Link to="/produits" className="mt-6 inline-block text-[11px] uppercase tracking-[0.15em] font-light text-gold hover:text-gold-dark transition-colors duration-500">
+        <Link to="/produits" className="mt-6 inline-block text-[11px] uppercase tracking-[0.15em] font-light text-gold hover:text-gold-dark transition-colors duration-300">
           Voir le catalogue
         </Link>
       </div>
@@ -150,15 +150,15 @@ export default function OrderForm() {
     }
   }
 
-  const inputClass = "mt-1 block w-full px-4 py-3 border border-[#e5ddd0] text-sm font-light text-charcoal outline-none focus:border-gold transition-colors duration-500 bg-cream-light placeholder:text-gray-400"
+  const inputClass = "mt-1 block w-full px-4 py-3 border border-gray-200 text-sm font-light text-[#222] outline-none focus:border-gold/80 transition-colors duration-300 bg-white placeholder:text-gray-400"
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-      <Link to="/panier" className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] font-light text-gray-400 hover:text-charcoal transition-colors duration-500 mb-10">
+      <Link to="/panier" className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] font-light text-gray-400 hover:text-[#222] transition-colors duration-300 mb-10">
         <ArrowLeft size={12} strokeWidth={1.5} /> Retour au panier
       </Link>
 
-      <h1 className="font-display text-4xl sm:text-5xl font-normal text-charcoal tracking-tight mb-12">Passer commande</h1>
+      <h1 className="font-display text-4xl sm:text-5xl font-normal text-[#222] tracking-tight mb-12">Passer commande</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
         {/* Form */}
@@ -248,33 +248,33 @@ export default function OrderForm() {
 
         {/* Order summary */}
         <div className="lg:col-span-2">
-          <div className="bg-cream-dark border-l-2 border-gold/30 p-8 sticky top-24">
-            <h2 className="font-display text-lg font-normal text-charcoal mb-6">Votre commande</h2>
+          <div className="bg-[#f7f7f5] border-l-2 border-gold/30 p-8 sticky top-24">
+            <h2 className="font-display text-lg font-normal text-[#222] mb-6">Votre commande</h2>
 
             <div className="space-y-4">
               {items.map(item => (
                 <div key={item.product_id} className="flex justify-between text-sm font-light">
                   <div className="min-w-0 flex-1">
-                    <p className="text-charcoal truncate">{item.name}</p>
+                    <p className="text-[#222] truncate">{item.name}</p>
                     <p className="text-gray-400 text-xs">x{item.qty}</p>
                   </div>
-                  <span className="text-charcoal ml-4">{fmtEur(item.price_cents * item.qty)}</span>
+                  <span className="text-[#222] ml-4">{fmtEur(item.price_cents * item.qty)}</span>
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-200/60 space-y-3 text-sm font-light">
+            <div className="mt-6 pt-6 border-t border-gray-200 space-y-3 text-sm font-light">
               <div className="flex justify-between">
                 <span className="text-gray-400">Sous-total HT</span>
-                <span className="text-charcoal">{fmtEur(total)}</span>
+                <span className="text-[#222]">{fmtEur(total)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">TVA (20%)</span>
-                <span className="text-charcoal">{fmtEur(taxCents)}</span>
+                <span className="text-[#222]">{fmtEur(taxCents)}</span>
               </div>
-              <div className="pt-3 border-t border-gray-200/60 flex justify-between items-center">
-                <span className="text-charcoal">Total TTC</span>
-                <span className="font-display text-xl font-normal text-charcoal">{fmtEur(ttcCents)}</span>
+              <div className="pt-3 border-t border-gray-200 flex justify-between items-center">
+                <span className="text-[#222]">Total TTC</span>
+                <span className="font-display text-xl font-normal text-[#222]">{fmtEur(ttcCents)}</span>
               </div>
             </div>
           </div>

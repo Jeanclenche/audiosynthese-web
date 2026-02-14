@@ -2,10 +2,7 @@ import { Link } from 'react-router-dom'
 
 export default function Footer() {
   return (
-    <footer className="bg-[#201b17]">
-      {/* Gold separator */}
-      <div className="h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-
+    <footer className="bg-[#1a1612] mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Logo */}
@@ -22,7 +19,7 @@ export default function Footer() {
               <Link
                 key={l.to}
                 to={l.to}
-                className="text-[11px] uppercase tracking-[0.2em] font-light text-white/40 hover:text-white transition-colors duration-500"
+                className="text-[11px] uppercase tracking-[0.2em] font-light text-white/40 hover:text-white transition-colors duration-300"
               >
                 {l.label}
               </Link>

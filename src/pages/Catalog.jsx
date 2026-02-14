@@ -52,38 +52,38 @@ export default function Catalog() {
   return (
     <div className="min-h-screen">
       {/* Header section */}
-      <div className="bg-cream-dark border-b border-[#e5ddd0]">
+      <div className="bg-[#f7f7f5] border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
           {/* Breadcrumb */}
           <nav className="text-[11px] uppercase tracking-[0.15em] font-light text-gray-400 mb-8 flex items-center gap-2">
-            <Link to="/" className="hover:text-charcoal transition-colors duration-500">Accueil</Link>
+            <Link to="/" className="hover:text-[#222] transition-colors duration-300">Accueil</Link>
             <span className="text-gray-300">/</span>
             {category ? (
               <>
-                <Link to="/produits" className="hover:text-charcoal transition-colors duration-500">Catalogue</Link>
+                <Link to="/produits" className="hover:text-[#222] transition-colors duration-300">Catalogue</Link>
                 <span className="text-gray-300">/</span>
-                <span className="text-charcoal">{catLabel(category)}</span>
+                <span className="text-[#222]">{catLabel(category)}</span>
               </>
             ) : (
-              <span className="text-charcoal">Catalogue</span>
+              <span className="text-[#222]">Catalogue</span>
             )}
           </nav>
 
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
-              <h1 className="font-display text-4xl sm:text-5xl font-normal text-charcoal tracking-tight">{title}</h1>
+              <h1 className="font-display text-4xl sm:text-5xl font-normal text-[#222] tracking-tight">{title}</h1>
               <p className="text-sm text-gray-400 font-light mt-2">{filtered.length} produit{filtered.length > 1 ? 's' : ''}</p>
             </div>
 
             {/* Search */}
-            <div className="flex items-center gap-3 px-4 py-3 border border-[#e5ddd0] bg-cream-light w-full sm:w-80">
+            <div className="flex items-center gap-3 px-4 py-3 border border-gray-200 bg-white w-full sm:w-80">
               <Search size={14} className="text-gray-400" strokeWidth={1.5} />
               <input
                 type="text"
                 placeholder="Rechercher..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="bg-transparent outline-none text-sm font-light flex-1 text-charcoal placeholder:text-gray-400"
+                className="bg-transparent outline-none text-sm font-light flex-1 text-[#222] placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -96,10 +96,10 @@ export default function Catalog() {
         <div className="flex flex-wrap gap-2 mb-10">
           <Link
             to="/produits"
-            className={`px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] font-light border transition-all duration-500 ${
+            className={`px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] font-light border transition-all duration-300 ${
               !category
                 ? 'border-gold text-gold'
-                : 'border-gray-200 text-gray-400 hover:border-gray-400 hover:text-charcoal'
+                : 'border-gray-200 text-gray-400 hover:border-gray-400 hover:text-[#222]'
             }`}
           >
             Tout
@@ -108,10 +108,10 @@ export default function Catalog() {
             <Link
               key={c.value}
               to={`/produits/${c.value}`}
-              className={`px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] font-light border transition-all duration-500 ${
+              className={`px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] font-light border transition-all duration-300 ${
                 category === c.value
                   ? 'border-gold text-gold'
-                  : 'border-gray-200 text-gray-400 hover:border-gray-400 hover:text-charcoal'
+                  : 'border-gray-200 text-gray-400 hover:border-gray-400 hover:text-[#222]'
               }`}
             >
               {c.label}
@@ -129,7 +129,7 @@ export default function Catalog() {
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="mt-4 text-[11px] uppercase tracking-[0.15em] font-light text-gold hover:text-gold-dark transition-colors duration-500"
+                className="mt-4 text-[11px] uppercase tracking-[0.15em] font-light text-gold hover:text-gold-dark transition-colors duration-300"
               >
                 Effacer la recherche
               </button>

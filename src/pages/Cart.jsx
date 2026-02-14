@@ -12,11 +12,11 @@ export default function Cart() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-      <Link to="/produits" className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] font-light text-gray-400 hover:text-charcoal transition-colors duration-500 mb-10">
+      <Link to="/produits" className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] font-light text-gray-400 hover:text-[#222] transition-colors duration-300 mb-10">
         <ArrowLeft size={12} strokeWidth={1.5} /> Continuer mes achats
       </Link>
 
-      <h1 className="font-display text-4xl sm:text-5xl font-normal text-charcoal tracking-tight mb-12">
+      <h1 className="font-display text-4xl sm:text-5xl font-normal text-[#222] tracking-tight mb-12">
         Mon panier
         <span className="text-gray-300 font-sans text-2xl font-light ml-3">({count})</span>
       </h1>
@@ -36,43 +36,43 @@ export default function Cart() {
             {items.map(item => (
               <div key={item.product_id} className="flex gap-5 py-8 first:pt-0">
                 {/* Thumbnail */}
-                <div className="w-20 h-24 bg-[#1c1915] flex-shrink-0 overflow-hidden">
+                <div className="w-20 h-24 bg-[#f5f4f2] flex-shrink-0 overflow-hidden">
                   {item.image_url ? (
                     <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-white/10 font-display text-sm">A</span>
+                      <span className="text-gray-200 font-display text-sm">A</span>
                     </div>
                   )}
                 </div>
 
                 {/* Details */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-light text-charcoal">{item.name}</p>
+                  <p className="font-light text-[#222]">{item.name}</p>
                   <p className="text-sm text-gray-400 font-light mt-1">{fmtEur(item.price_cents)} / unite</p>
 
                   <div className="flex items-center justify-between mt-5">
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => updateCartQuantity(item.product_id, item.qty - 1)}
-                        className="w-8 h-8 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-charcoal hover:text-charcoal transition-colors duration-500"
+                        className="w-8 h-8 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#222] transition-colors duration-300"
                       >
                         <Minus size={12} />
                       </button>
                       <span className="text-sm font-light w-8 text-center">{item.qty}</span>
                       <button
                         onClick={() => updateCartQuantity(item.product_id, item.qty + 1)}
-                        className="w-8 h-8 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-charcoal hover:text-charcoal transition-colors duration-500"
+                        className="w-8 h-8 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#222] transition-colors duration-300"
                       >
                         <Plus size={12} />
                       </button>
                     </div>
 
                     <div className="flex items-center gap-5">
-                      <span className="text-charcoal font-light">{fmtEur(item.price_cents * item.qty)}</span>
+                      <span className="text-[#222] font-light">{fmtEur(item.price_cents * item.qty)}</span>
                       <button
                         onClick={() => removeFromCart(item.product_id)}
-                        className="text-gray-300 hover:text-red-400 transition-colors duration-500"
+                        className="text-gray-300 hover:text-red-400 transition-colors duration-300"
                       >
                         <Trash2 size={14} strokeWidth={1.5} />
                       </button>
@@ -85,21 +85,21 @@ export default function Cart() {
 
           {/* Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-cream-dark border-l-2 border-gold/30 p-8 sticky top-24">
-              <h3 className="font-display text-lg font-normal text-charcoal mb-6">Recapitulatif</h3>
+            <div className="bg-[#f7f7f5] border-l-2 border-gold/30 p-8 sticky top-24">
+              <h3 className="font-display text-lg font-normal text-[#222] mb-6">Recapitulatif</h3>
 
               <div className="space-y-4 text-sm font-light">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Sous-total HT</span>
-                  <span className="text-charcoal">{fmtEur(total)}</span>
+                  <span className="text-[#222]">{fmtEur(total)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">TVA (20%)</span>
-                  <span className="text-charcoal">{fmtEur(taxCents)}</span>
+                  <span className="text-[#222]">{fmtEur(taxCents)}</span>
                 </div>
-                <div className="pt-4 border-t border-gray-200/60 flex justify-between items-center">
-                  <span className="text-charcoal">Total TTC</span>
-                  <span className="font-display text-2xl font-normal text-charcoal">{fmtEur(ttcCents)}</span>
+                <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
+                  <span className="text-[#222]">Total TTC</span>
+                  <span className="font-display text-2xl font-normal text-[#222]">{fmtEur(ttcCents)}</span>
                 </div>
               </div>
 

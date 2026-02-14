@@ -16,7 +16,7 @@ export default function OrderConfirmation() {
         <CheckCircle size={56} className="text-gold" strokeWidth={1} />
       </div>
 
-      <h1 className="font-display text-4xl sm:text-5xl font-normal text-charcoal tracking-tight">
+      <h1 className="font-display text-4xl sm:text-5xl font-normal text-[#222] tracking-tight">
         Commande confirmee
       </h1>
 
@@ -27,17 +27,17 @@ export default function OrderConfirmation() {
       {/* Order number */}
       <div className="mt-10 inline-block">
         <p className="text-[11px] uppercase tracking-[0.2em] font-light text-gray-400 mb-2">Numero de commande</p>
-        <p className="font-display text-2xl font-normal text-charcoal">{state.invoiceNumber}</p>
+        <p className="font-display text-2xl font-normal text-[#222]">{state.invoiceNumber}</p>
         {state.total && (
           <>
             <p className="text-[11px] uppercase tracking-[0.2em] font-light text-gray-400 mt-5 mb-2">Montant total TTC</p>
-            <p className="font-display text-xl font-normal text-charcoal">{fmtEur(state.total)}</p>
+            <p className="font-display text-xl font-normal text-[#222]">{fmtEur(state.total)}</p>
           </>
         )}
       </div>
 
       {/* Next steps */}
-      <div className="mt-10 py-6 border-t border-b border-gray-200/60 max-w-md mx-auto">
+      <div className="mt-10 py-6 border-t border-b border-gray-100 max-w-md mx-auto">
         <p className="text-sm text-gray-500 font-light leading-relaxed">
           Nous vous contacterons par email ou telephone pour confirmer la disponibilite
           des articles et organiser le reglement. Aucun paiement n'est preleve en ligne.
@@ -50,7 +50,7 @@ export default function OrderConfirmation() {
         </Link>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-light uppercase tracking-widest text-gray-400 border border-gray-200 hover:text-charcoal hover:border-gray-400 transition-all duration-500"
+          className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-light uppercase tracking-widest text-gray-400 border border-gray-200 hover:text-[#222] hover:border-gray-400 transition-all duration-300"
         >
           Retour a l'accueil
         </Link>
