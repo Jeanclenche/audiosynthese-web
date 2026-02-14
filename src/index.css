@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
+    color: #111;
+    background: #f8f4ed;
+    margin: 0;
+  }
+
+  ::selection {
+    background-color: rgba(168, 126, 69, 0.25);
+    color: #111;
+  }
+}
+
+@layer components {
+  .btn-luxury {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5
+           text-sm font-light uppercase tracking-widest
+           transition-all duration-500 ease-out;
+    color: #a87e45;
+    border: 1px solid rgba(168, 126, 69, 0.6);
+  }
+  .btn-luxury:hover {
+    background-color: #a87e45;
+    border-color: #a87e45;
+    color: #fff;
+  }
+
+  .btn-luxury-dark {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5
+           text-white text-sm font-light uppercase tracking-widest
+           transition-all duration-500 ease-out;
+    background-color: #111;
+    border: 1px solid #111;
+  }
+  .btn-luxury-dark:hover {
+    background-color: #000;
+    border-color: #000;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s ease-out forwards;
+}
+
+.animate-fade-up-delay {
+  animation: fadeUp 0.8s ease-out 0.15s forwards;
+  opacity: 0;
+}
+
+.animate-fade-up-delay-2 {
+  animation: fadeUp 0.8s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
