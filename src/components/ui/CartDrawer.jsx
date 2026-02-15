@@ -20,13 +20,13 @@ export default function CartDrawer() {
       <div className="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-white flex flex-col shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-          <h2 className="font-display text-lg font-normal text-[#222]">
+          <h2 className="font-display text-lg font-normal text-[#333]">
             Panier
             <span className="text-sm text-gray-400 font-sans font-light ml-2">({count})</span>
           </h2>
           <button
             onClick={() => setDrawerOpen(false)}
-            className="text-gray-400 hover:text-[#222] transition-colors duration-300 p-1"
+            className="text-gray-400 hover:text-[#333] transition-colors duration-300 p-1"
           >
             <X size={18} strokeWidth={1.5} />
           </button>
@@ -65,20 +65,20 @@ export default function CartDrawer() {
 
                   {/* Details */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-light text-[#222] truncate">{item.name}</p>
+                    <p className="text-sm font-light text-[#333] truncate">{item.name}</p>
                     <p className="text-sm text-gray-400 font-light mt-0.5">{fmtEur(item.price_cents)}</p>
 
                     <div className="flex items-center gap-2 mt-3">
                       <button
                         onClick={() => updateCartQuantity(item.product_id, item.qty - 1)}
-                        className="w-7 h-7 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#222] transition-colors duration-300"
+                        className="w-7 h-7 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#333] transition-colors duration-300"
                       >
                         <Minus size={10} />
                       </button>
                       <span className="text-xs font-light w-6 text-center">{item.qty}</span>
                       <button
                         onClick={() => updateCartQuantity(item.product_id, item.qty + 1)}
-                        className="w-7 h-7 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#222] transition-colors duration-300"
+                        className="w-7 h-7 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#333] transition-colors duration-300"
                       >
                         <Plus size={10} />
                       </button>
@@ -101,7 +101,7 @@ export default function CartDrawer() {
           <div className="px-6 py-5 border-t border-gray-100 space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-xs uppercase tracking-[0.15em] font-light text-gray-400">Total HT</span>
-              <span className="font-display text-xl font-normal text-[#222]">{fmtEur(total)}</span>
+              <span className="font-display text-xl font-normal text-[#333]">{fmtEur(total)}</span>
             </div>
             <Link
               to="/panier"

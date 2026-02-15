@@ -58,18 +58,18 @@ export default function ProductDetail() {
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="bg-[#f7f7f5] border-b border-gray-100">
+      <div className="bg-[#f8f8f8] border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <nav className="text-[11px] uppercase tracking-[0.15em] font-light text-gray-400 flex items-center gap-2">
-            <Link to="/" className="hover:text-[#222] transition-colors duration-300">Accueil</Link>
+            <Link to="/" className="hover:text-[#333] transition-colors duration-300">Accueil</Link>
             <span className="text-gray-300">/</span>
-            <Link to="/produits" className="hover:text-[#222] transition-colors duration-300">Catalogue</Link>
+            <Link to="/produits" className="hover:text-[#333] transition-colors duration-300">Catalogue</Link>
             <span className="text-gray-300">/</span>
-            <Link to={`/produits/${product.category}`} className="hover:text-[#222] transition-colors duration-300">
+            <Link to={`/produits/${product.category}`} className="hover:text-[#333] transition-colors duration-300">
               {catLabel(product.category)}
             </Link>
             <span className="text-gray-300">/</span>
-            <span className="text-[#222] truncate">{product.name}</span>
+            <span className="text-[#333] truncate">{product.name}</span>
           </nav>
         </div>
       </div>
@@ -93,17 +93,17 @@ export default function ProductDetail() {
         <div className="flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-12 sm:py-16 bg-white">
           <Link
             to="/produits"
-            className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] font-light text-gray-400 hover:text-[#222] transition-colors duration-300 mb-10"
+            className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] font-light text-gray-400 hover:text-[#333] transition-colors duration-300 mb-10"
           >
             <ArrowLeft size={12} strokeWidth={1.5} /> Retour au catalogue
           </Link>
 
           <p className="text-[11px] text-gold font-light uppercase tracking-[0.3em]">{product.brand}</p>
-          <h1 className="font-display text-3xl sm:text-4xl font-normal text-[#222] mt-3 tracking-tight">{product.name}</h1>
+          <h1 className="font-display text-3xl sm:text-4xl font-normal text-[#333] mt-3 tracking-tight">{product.name}</h1>
 
           {/* Price with line */}
           <div className="mt-8 pt-8 border-t border-gray-100">
-            <p className="text-3xl sm:text-4xl font-light text-[#222] tracking-tight">{fmtEur(product.price_cents)}</p>
+            <p className="text-3xl sm:text-4xl font-light text-[#333] tracking-tight">{fmtEur(product.price_cents)}</p>
             <p className="text-xs text-gray-400 font-light mt-1 uppercase tracking-wider">Prix HT</p>
           </div>
 
@@ -136,14 +136,14 @@ export default function ProductDetail() {
                   <div className="flex items-center border border-gray-200">
                     <button
                       onClick={() => setQty(Math.max(1, qty - 1))}
-                      className="px-4 py-3 text-gray-400 hover:text-[#222] transition-colors duration-300 text-sm"
+                      className="px-4 py-3 text-gray-400 hover:text-[#333] transition-colors duration-300 text-sm"
                     >
                       -
                     </button>
-                    <span className="px-4 py-3 text-sm font-light text-[#222] min-w-[2.5rem] text-center">{qty}</span>
+                    <span className="px-4 py-3 text-sm font-light text-[#333] min-w-[2.5rem] text-center">{qty}</span>
                     <button
                       onClick={() => setQty(qty + 1)}
-                      className="px-4 py-3 text-gray-400 hover:text-[#222] transition-colors duration-300 text-sm"
+                      className="px-4 py-3 text-gray-400 hover:text-[#333] transition-colors duration-300 text-sm"
                     >
                       +
                     </button>

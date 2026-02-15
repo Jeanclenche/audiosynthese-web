@@ -31,13 +31,13 @@ export default function ProductCard({ product }) {
           {product.brand}
         </p>
         <Link to={`/produit/${product.id}`} className="block">
-          <h3 className="font-display font-normal text-[#222] text-base leading-snug group-hover:text-gold-dark transition-colors duration-300 line-clamp-2">
+          <h3 className="font-display font-normal text-[#333] text-base leading-snug group-hover:text-gold-dark transition-colors duration-300 line-clamp-2">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-end justify-between mt-4 pt-4 border-t border-gray-100">
-          <span className="text-xl font-light text-[#222] tracking-tight">{fmtEur(product.price_cents)}</span>
+          <span className="text-xl font-light text-[#333] tracking-tight">{fmtEur(product.price_cents)}</span>
 
           {orderable ? (
             <button

@@ -36,7 +36,7 @@ export default function Home() {
             <p className="text-[11px] text-gold font-light uppercase tracking-[0.3em] mb-6">
               Audio haut de gamme
             </p>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-normal leading-[1.1] tracking-tight text-[#222]">
+            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-normal leading-[1.1] tracking-tight text-[#333]">
               L'excellence sonore
               <br />
               <span className="text-gray-300">a portee de main</span>
@@ -54,7 +54,7 @@ export default function Home() {
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-light uppercase tracking-widest text-gray-400 border border-gray-200 hover:text-[#222] hover:border-gray-400 transition-all duration-300"
+                className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-light uppercase tracking-widest text-gray-400 border border-gray-200 hover:text-[#333] hover:border-gray-400 transition-all duration-300"
               >
                 Nous contacter
               </Link>
@@ -64,11 +64,11 @@ export default function Home() {
       </section>
 
       {/* Categories — subtle gray background */}
-      <section className="bg-[#f7f7f5]">
+      <section className="bg-[#f8f8f8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
           <div className="text-center mb-16">
             <p className="text-[11px] text-gold font-light uppercase tracking-[0.3em] mb-4">Collections</p>
-            <h2 className="font-display text-4xl sm:text-5xl font-normal text-[#222] tracking-tight">
+            <h2 className="font-display text-4xl sm:text-5xl font-normal text-[#333] tracking-tight">
               Nos univers
             </h2>
           </div>
@@ -81,7 +81,7 @@ export default function Home() {
               >
                 {/* Gold top line on hover */}
                 <div className="absolute top-0 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-                <h3 className="font-display text-lg font-normal text-[#222] group-hover:text-gold-dark transition-colors duration-300">
+                <h3 className="font-display text-lg font-normal text-[#333] group-hover:text-gold-dark transition-colors duration-300">
                   {cat.label}
                 </h3>
                 <p className="mt-2 text-xs font-light text-gray-400">{cat.desc}</p>
@@ -98,7 +98,7 @@ export default function Home() {
             <div className="flex items-end justify-between mb-14">
               <div>
                 <p className="text-[11px] text-gold font-light uppercase tracking-[0.3em] mb-4">Selection</p>
-                <h2 className="font-display text-4xl sm:text-5xl font-normal text-[#222] tracking-tight">
+                <h2 className="font-display text-4xl sm:text-5xl font-normal text-[#333] tracking-tight">
                   Derniers produits
                 </h2>
               </div>
@@ -124,10 +124,10 @@ export default function Home() {
       )}
 
       {/* CTA — subtle background */}
-      <section className="bg-[#f7f7f5] border-t border-gray-100">
+      <section className="bg-[#f8f8f8] border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
           <p className="text-[11px] text-gold font-light uppercase tracking-[0.3em] mb-4">A votre service</p>
-          <h2 className="font-display text-4xl sm:text-5xl font-normal text-[#222] tracking-tight max-w-2xl mx-auto">
+          <h2 className="font-display text-4xl sm:text-5xl font-normal text-[#333] tracking-tight max-w-2xl mx-auto">
             Une question ? Un projet audio ?
           </h2>
           <p className="mt-6 text-gray-400 font-light max-w-lg mx-auto leading-relaxed">
