@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { ShoppingBag, Menu, X } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { ShoppingBag, Menu, X, User, LogOut, Package, Settings } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
 
 const navLinks = [
   { to: '/', label: 'Accueil', end: true },
@@ -11,7 +12,30 @@ const navLinks = [
 
 export default function Header() {
   const { count, setDrawerOpen } = useCart()
+  const { user, customer, signOut } = useAuth()
+  const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  async function handleSignOut() {
+    setDropdownOpen(false)
+    setMobileOpen(false)
+    await signOut()
+    navigate('/')
+  }
+
+  const linkClass = "text-[11px] uppercase tracking-[0.2em] font-light transition-colors duration-300"
 
   return (
     <header className="bg-black sticky top-0 z-50">
@@ -32,9 +56,7 @@ export default function Header() {
                 to={l.to}
                 end={l.end}
                 className={({ isActive }) =>
-                  `text-[11px] uppercase tracking-[0.2em] font-light transition-colors duration-300 ${
-                    isActive ? 'text-white' : 'text-white/50 hover:text-white'
-                  }`
+                  `${linkClass} ${isActive ? 'text-white' : 'text-white/50 hover:text-white'}`
                 }
               >
                 {l.label}
@@ -42,8 +64,57 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Cart + mobile menu */}
+          {/* Auth + Cart + mobile menu */}
           <div className="flex items-center gap-2">
+            {/* Desktop auth */}
+            <div className="hidden md:block">
+              {user ? (
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="text-white/50 hover:text-white transition-colors duration-300 p-2"
+                  >
+                    <User size={20} strokeWidth={1.5} />
+                  </button>
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg border border-gray-100 py-2 z-50">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-[#333] truncate">{customer?.full_name || 'Mon compte'}</p>
+                        <p className="text-xs text-gray-400 font-light truncate">{user.email}</p>
+                      </div>
+                      <Link
+                        to="/mon-compte"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2.5 text-xs text-gray-500 hover:bg-gray-50 hover:text-[#333] transition-colors"
+                      >
+                        <Settings size={14} strokeWidth={1.5} /> Mon compte
+                      </Link>
+                      <Link
+                        to="/mes-commandes"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2.5 text-xs text-gray-500 hover:bg-gray-50 hover:text-[#333] transition-colors"
+                      >
+                        <Package size={14} strokeWidth={1.5} /> Mes commandes
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-500 hover:bg-gray-50 hover:text-red-500 transition-colors border-t border-gray-100"
+                      >
+                        <LogOut size={14} strokeWidth={1.5} /> Se deconnecter
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to="/connexion"
+                  className={`${linkClass} text-white/50 hover:text-white`}
+                >
+                  Se connecter
+                </Link>
+              )}
+            </div>
+
             <button
               onClick={() => setDrawerOpen(true)}
               className="relative text-white/50 hover:text-white transition-colors duration-300 p-2"
@@ -76,9 +147,7 @@ export default function Header() {
                 end={l.end}
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `block px-4 py-3 text-[11px] uppercase tracking-[0.2em] font-light transition-colors duration-300 ${
-                    isActive ? 'text-white' : 'text-white/50 hover:text-white'
-                  }`
+                  `block px-4 py-3 ${linkClass} ${isActive ? 'text-white' : 'text-white/50 hover:text-white'}`
                 }
               >
                 {l.label}
@@ -87,10 +156,48 @@ export default function Header() {
             <Link
               to="/panier"
               onClick={() => setMobileOpen(false)}
-              className="block px-4 py-3 text-[11px] uppercase tracking-[0.2em] font-light text-white/50 hover:text-white transition-colors duration-300"
+              className={`block px-4 py-3 ${linkClass} text-white/50 hover:text-white`}
             >
               Panier {count > 0 && `(${count})`}
             </Link>
+
+            <div className="border-t border-white/10 mt-3 pt-3">
+              {user ? (
+                <>
+                  <div className="px-4 py-2">
+                    <p className="text-xs text-white/70 font-light">{customer?.full_name || user.email}</p>
+                  </div>
+                  <Link
+                    to="/mon-compte"
+                    onClick={() => setMobileOpen(false)}
+                    className={`block px-4 py-3 ${linkClass} text-white/50 hover:text-white`}
+                  >
+                    Mon compte
+                  </Link>
+                  <Link
+                    to="/mes-commandes"
+                    onClick={() => setMobileOpen(false)}
+                    className={`block px-4 py-3 ${linkClass} text-white/50 hover:text-white`}
+                  >
+                    Mes commandes
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className={`block w-full text-left px-4 py-3 ${linkClass} text-white/50 hover:text-red-400`}
+                  >
+                    Se deconnecter
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/connexion"
+                  onClick={() => setMobileOpen(false)}
+                  className={`block px-4 py-3 ${linkClass} text-white/50 hover:text-white`}
+                >
+                  Se connecter
+                </Link>
+              )}
+            </div>
           </nav>
         </div>
       )}

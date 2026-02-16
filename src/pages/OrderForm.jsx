@@ -1,16 +1,43 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { ArrowLeft, Send } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { fmtEur } from '../lib/format'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 
 export default function OrderForm() {
   const navigate = useNavigate()
   const { items, total, clearCartItems } = useCart()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', note: '' })
+  const { customer, updateProfile } = useAuth()
+
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    companyName: '',
+    billingAddress: '',
+    shippingSameAsBilling: true,
+    shippingAddress: '',
+    note: '',
+  })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (customer) {
+      setForm(f => ({
+        ...f,
+        name: customer.full_name || '',
+        email: customer.email || '',
+        phone: customer.phone || '',
+        companyName: customer.company_name || '',
+        billingAddress: customer.billing_address || '',
+        shippingSameAsBilling: customer.shipping_same_as_billing ?? true,
+        shippingAddress: customer.shipping_address || '',
+      }))
+    }
+  }, [customer])
 
   const taxRate = 0.20
   const taxCents = Math.round(total * taxRate)
@@ -50,34 +77,19 @@ export default function OrderForm() {
     setSubmitting(true)
 
     try {
-      let customerId
-      if (form.email) {
-        const { data: existing } = await supabase
-          .from('customers')
-          .select('id')
-          .eq('email', form.email)
-          .single()
+      const customerId = customer.id
 
-        if (existing) {
-          customerId = existing.id
-        }
-      }
+      // Update profile if addresses changed
+      const shippingAddr = form.shippingSameAsBilling ? form.billingAddress : form.shippingAddress
+      const profileUpdates = {}
+      if (form.phone !== (customer.phone || '')) profileUpdates.phone = form.phone
+      if (form.companyName !== (customer.company_name || '')) profileUpdates.company_name = form.companyName
+      if (form.billingAddress !== (customer.billing_address || '')) profileUpdates.billing_address = form.billingAddress
+      if (form.shippingSameAsBilling !== (customer.shipping_same_as_billing ?? true)) profileUpdates.shipping_same_as_billing = form.shippingSameAsBilling
+      if (shippingAddr !== (customer.shipping_address || '')) profileUpdates.shipping_address = shippingAddr
 
-      if (!customerId) {
-        const { data: newCustomer, error: custErr } = await supabase
-          .from('customers')
-          .insert({
-            full_name: form.name,
-            email: form.email || null,
-            phone: form.phone,
-            address: form.address,
-            notes: 'Client cree via le site web',
-          })
-          .select()
-          .single()
-
-        if (custErr) throw custErr
-        customerId = newCustomer.id
+      if (Object.keys(profileUpdates).length > 0) {
+        await updateProfile(profileUpdates)
       }
 
       const invoiceNumber = await generateWebInvoiceNumber()
@@ -86,7 +98,9 @@ export default function OrderForm() {
         `Nom : ${form.name}`,
         form.email ? `Email : ${form.email}` : '',
         form.phone ? `Tel : ${form.phone}` : '',
-        form.address ? `Adresse : ${form.address}` : '',
+        form.companyName ? `Societe : ${form.companyName}` : '',
+        form.billingAddress ? `Facturation : ${form.billingAddress}` : '',
+        shippingAddr ? `Livraison : ${shippingAddr}` : '',
         form.note ? `Note : ${form.note}` : '',
       ].filter(Boolean).join('\n')
 
@@ -124,7 +138,6 @@ export default function OrderForm() {
       // Decrement stock
       for (const item of items) {
         if (item.color_id) {
-          // Decrement color stock
           const { data: freshColor } = await supabase
             .from('product_colors')
             .select('stock_qty')
@@ -136,7 +149,6 @@ export default function OrderForm() {
               .update({ stock_qty: Math.max(0, freshColor.stock_qty - item.qty) })
               .eq('id', item.color_id)
           }
-          // Recalc product total stock
           const { data: allColors } = await supabase
             .from('product_colors')
             .select('stock_qty')
@@ -149,7 +161,6 @@ export default function OrderForm() {
               .eq('id', item.product_id)
           }
         } else {
-          // No color: decrement product stock directly
           const { data: prod } = await supabase
             .from('products')
             .select('stock_qty')
@@ -181,6 +192,7 @@ export default function OrderForm() {
   }
 
   const inputClass = "mt-1 block w-full px-4 py-3 border border-gray-200 text-sm font-light text-[#333] outline-none focus:border-gold/80 transition-colors duration-300 bg-white placeholder:text-gray-400"
+  const readOnlyClass = `${inputClass} bg-gray-50 text-gray-400 cursor-not-allowed`
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
@@ -198,50 +210,72 @@ export default function OrderForm() {
 
             <div className="space-y-5">
               <label className="block">
-                <span className="text-xs text-gray-400 font-light">Nom complet *</span>
-                <input
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={e => setForm({ ...form, name: e.target.value })}
-                  placeholder="Jean Dupont"
-                  className={inputClass}
-                />
+                <span className="text-xs text-gray-400 font-light">Nom complet</span>
+                <input type="text" value={form.name} disabled className={readOnlyClass} />
               </label>
 
               <label className="block">
-                <span className="text-xs text-gray-400 font-light">Email *</span>
-                <input
-                  type="email"
-                  required
-                  value={form.email}
-                  onChange={e => setForm({ ...form, email: e.target.value })}
-                  placeholder="jean@exemple.com"
-                  className={inputClass}
-                />
+                <span className="text-xs text-gray-400 font-light">Email</span>
+                <input type="email" value={form.email} disabled className={readOnlyClass} />
               </label>
 
-              <label className="block">
-                <span className="text-xs text-gray-400 font-light">Telephone</span>
-                <input
-                  type="tel"
-                  value={form.phone}
-                  onChange={e => setForm({ ...form, phone: e.target.value })}
-                  placeholder="06 12 34 56 78"
-                  className={inputClass}
-                />
-              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <label className="block">
+                  <span className="text-xs text-gray-400 font-light">Telephone</span>
+                  <input
+                    type="tel"
+                    value={form.phone}
+                    onChange={e => setForm({ ...form, phone: e.target.value })}
+                    placeholder="06 12 34 56 78"
+                    className={inputClass}
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-xs text-gray-400 font-light">Societe</span>
+                  <input
+                    type="text"
+                    value={form.companyName}
+                    onChange={e => setForm({ ...form, companyName: e.target.value })}
+                    placeholder="Nom de societe"
+                    className={inputClass}
+                  />
+                </label>
+              </div>
 
               <label className="block">
-                <span className="text-xs text-gray-400 font-light">Adresse (optionnel)</span>
+                <span className="text-xs text-gray-400 font-light">Adresse de facturation *</span>
                 <textarea
-                  value={form.address}
-                  onChange={e => setForm({ ...form, address: e.target.value })}
+                  required
+                  value={form.billingAddress}
+                  onChange={e => setForm({ ...form, billingAddress: e.target.value })}
                   placeholder="123 rue de Paris, 75001 Paris"
                   rows={2}
                   className={`${inputClass} resize-none`}
                 />
               </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.shippingSameAsBilling}
+                  onChange={e => setForm({ ...form, shippingSameAsBilling: e.target.checked })}
+                  className="w-4 h-4 accent-gold"
+                />
+                <span className="text-xs text-gray-500 font-light">Adresse de livraison identique a la facturation</span>
+              </label>
+
+              {!form.shippingSameAsBilling && (
+                <label className="block">
+                  <span className="text-xs text-gray-400 font-light">Adresse de livraison</span>
+                  <textarea
+                    value={form.shippingAddress}
+                    onChange={e => setForm({ ...form, shippingAddress: e.target.value })}
+                    placeholder="Adresse de livraison"
+                    rows={2}
+                    className={`${inputClass} resize-none`}
+                  />
+                </label>
+              )}
 
               <label className="block">
                 <span className="text-xs text-gray-400 font-light">Note (optionnel)</span>
@@ -253,6 +287,11 @@ export default function OrderForm() {
                   className={`${inputClass} resize-none`}
                 />
               </label>
+
+              <p className="text-[10px] text-gray-400 font-light">
+                Pour modifier votre nom ou email, rendez-vous dans{' '}
+                <Link to="/mon-compte" className="text-gold hover:text-gold-dark transition-colors">Mon compte</Link>.
+              </p>
             </div>
           </div>
 

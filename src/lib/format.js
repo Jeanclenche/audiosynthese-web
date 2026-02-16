@@ -2,6 +2,10 @@ export function fmtEur(cents) {
   return (cents / 100).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
 }
 
+export function fmtDate(iso) {
+  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
 export const CATEGORIES = [
   { value: 'speakers', label: 'Enceintes' },
   { value: 'amplifiers', label: 'Amplificateurs' },
