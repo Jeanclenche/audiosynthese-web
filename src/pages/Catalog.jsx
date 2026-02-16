@@ -17,7 +17,7 @@ export default function Catalog() {
       setLoading(true)
       let query = supabase
         .from('products')
-        .select('*')
+        .select('*, product_colors(*, product_images(*))')
         .eq('is_active', true)
         .order('brand')
         .order('name')
@@ -30,7 +30,17 @@ export default function Catalog() {
         }
       }
 
-      const { data } = await query
+      let { data, error } = await query
+      // Fallback if color tables don't exist yet
+      if (error) {
+        let fallback = supabase.from('products').select('*').eq('is_active', true).order('brand').order('name')
+        if (category) {
+          if (category === 'cables') fallback = fallback.in('category', ['cables', 'accessories'])
+          else fallback = fallback.eq('category', category)
+        }
+        const res = await fallback
+        data = res.data
+      }
       setProducts(data || [])
       setLoading(false)
     }

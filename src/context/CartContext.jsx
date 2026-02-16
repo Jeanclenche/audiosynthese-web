@@ -10,19 +10,19 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState(getCart)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const addToCart = useCallback((product, qty = 1) => {
-    const updated = addItem(product, qty)
+  const addToCart = useCallback((product, qty = 1, color = null) => {
+    const updated = addItem(product, qty, color)
     setItems(updated)
     setDrawerOpen(true)
   }, [])
 
-  const updateCartQuantity = useCallback((productId, qty) => {
-    const updated = updateQty(productId, qty)
+  const updateCartQuantity = useCallback((productId, colorId, qty) => {
+    const updated = updateQty(productId, colorId, qty)
     setItems(updated)
   }, [])
 
-  const removeFromCart = useCallback((productId) => {
-    const updated = removeItem(productId)
+  const removeFromCart = useCallback((productId, colorId) => {
+    const updated = removeItem(productId, colorId)
     setItems(updated)
   }, [])
 

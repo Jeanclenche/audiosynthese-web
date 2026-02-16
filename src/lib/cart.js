@@ -12,9 +12,15 @@ export function saveCart(items) {
   localStorage.setItem(CART_KEY, JSON.stringify(items))
 }
 
-export function addToCart(product, qty = 1) {
+// Unique key for a cart item: product_id + color_id
+function itemKey(item) {
+  return `${item.product_id}_${item.color_id || ''}`
+}
+
+export function addToCart(product, qty = 1, color = null) {
   const items = getCart()
-  const idx = items.findIndex(i => i.product_id === product.id)
+  const colorId = color?.id || null
+  const idx = items.findIndex(i => i.product_id === product.id && (i.color_id || null) === colorId)
   if (idx >= 0) {
     items[idx].qty += qty
   } else {
@@ -24,26 +30,30 @@ export function addToCart(product, qty = 1) {
       price_cents: product.price_cents,
       qty,
       image_url: product.image_url || '',
+      color_id: colorId,
+      color_name: color?.color_name || '',
     })
   }
   saveCart(items)
   return items
 }
 
-export function updateCartQty(productId, qty) {
+export function updateCartQty(productId, colorId, qty) {
   let items = getCart()
+  const cId = colorId || null
   if (qty <= 0) {
-    items = items.filter(i => i.product_id !== productId)
+    items = items.filter(i => !(i.product_id === productId && (i.color_id || null) === cId))
   } else {
-    const idx = items.findIndex(i => i.product_id === productId)
+    const idx = items.findIndex(i => i.product_id === productId && (i.color_id || null) === cId)
     if (idx >= 0) items[idx].qty = qty
   }
   saveCart(items)
   return items
 }
 
-export function removeFromCart(productId) {
-  const items = getCart().filter(i => i.product_id !== productId)
+export function removeFromCart(productId, colorId) {
+  const cId = colorId || null
+  const items = getCart().filter(i => !(i.product_id === productId && (i.color_id || null) === cId))
   saveCart(items)
   return items
 }

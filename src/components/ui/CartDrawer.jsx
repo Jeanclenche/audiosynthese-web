@@ -51,7 +51,7 @@ export default function CartDrawer() {
           ) : (
             <div className="space-y-6">
               {items.map(item => (
-                <div key={item.product_id} className="flex gap-4 pb-6 border-b border-gray-100 last:border-0">
+                <div key={`${item.product_id}_${item.color_id || ''}`} className="flex gap-4 pb-6 border-b border-gray-100 last:border-0">
                   {/* Thumbnail */}
                   <div className="w-16 h-20 bg-[#f5f4f2] flex-shrink-0 overflow-hidden">
                     {item.image_url ? (
@@ -66,24 +66,27 @@ export default function CartDrawer() {
                   {/* Details */}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-light text-[#333] truncate">{item.name}</p>
+                    {item.color_name && (
+                      <p className="text-xs text-gray-400 font-light mt-0.5">{item.color_name}</p>
+                    )}
                     <p className="text-sm text-gray-400 font-light mt-0.5">{fmtEur(item.price_cents)}</p>
 
                     <div className="flex items-center gap-2 mt-3">
                       <button
-                        onClick={() => updateCartQuantity(item.product_id, item.qty - 1)}
+                        onClick={() => updateCartQuantity(item.product_id, item.color_id, item.qty - 1)}
                         className="w-7 h-7 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#333] transition-colors duration-300"
                       >
                         <Minus size={10} />
                       </button>
                       <span className="text-xs font-light w-6 text-center">{item.qty}</span>
                       <button
-                        onClick={() => updateCartQuantity(item.product_id, item.qty + 1)}
+                        onClick={() => updateCartQuantity(item.product_id, item.color_id, item.qty + 1)}
                         className="w-7 h-7 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#333] transition-colors duration-300"
                       >
                         <Plus size={10} />
                       </button>
                       <button
-                        onClick={() => removeFromCart(item.product_id)}
+                        onClick={() => removeFromCart(item.product_id, item.color_id)}
                         className="ml-auto text-gray-300 hover:text-red-400 transition-colors duration-300"
                       >
                         <Trash2 size={13} strokeWidth={1.5} />

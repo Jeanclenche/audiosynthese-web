@@ -34,7 +34,7 @@ export default function Cart() {
           {/* Items list */}
           <div className="lg:col-span-2 divide-y divide-gray-100">
             {items.map(item => (
-              <div key={item.product_id} className="flex gap-5 py-8 first:pt-0">
+              <div key={`${item.product_id}_${item.color_id || ''}`} className="flex gap-5 py-8 first:pt-0">
                 {/* Thumbnail */}
                 <div className="w-20 h-24 bg-[#f5f4f2] flex-shrink-0 overflow-hidden">
                   {item.image_url ? (
@@ -49,19 +49,22 @@ export default function Cart() {
                 {/* Details */}
                 <div className="flex-1 min-w-0">
                   <p className="font-light text-[#333]">{item.name}</p>
+                  {item.color_name && (
+                    <p className="text-xs text-gray-400 font-light mt-0.5">{item.color_name}</p>
+                  )}
                   <p className="text-sm text-gray-400 font-light mt-1">{fmtEur(item.price_cents)} / unite</p>
 
                   <div className="flex items-center justify-between mt-5">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => updateCartQuantity(item.product_id, item.qty - 1)}
+                        onClick={() => updateCartQuantity(item.product_id, item.color_id, item.qty - 1)}
                         className="w-8 h-8 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#333] transition-colors duration-300"
                       >
                         <Minus size={12} />
                       </button>
                       <span className="text-sm font-light w-8 text-center">{item.qty}</span>
                       <button
-                        onClick={() => updateCartQuantity(item.product_id, item.qty + 1)}
+                        onClick={() => updateCartQuantity(item.product_id, item.color_id, item.qty + 1)}
                         className="w-8 h-8 border border-gray-200 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-[#333] transition-colors duration-300"
                       >
                         <Plus size={12} />
@@ -71,7 +74,7 @@ export default function Cart() {
                     <div className="flex items-center gap-5">
                       <span className="text-[#333] font-light">{fmtEur(item.price_cents * item.qty)}</span>
                       <button
-                        onClick={() => removeFromCart(item.product_id)}
+                        onClick={() => removeFromCart(item.product_id, item.color_id)}
                         className="text-gray-300 hover:text-red-400 transition-colors duration-300"
                       >
                         <Trash2 size={14} strokeWidth={1.5} />

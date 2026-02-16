@@ -10,19 +10,35 @@ export default function ProductDetail() {
   const { id } = useParams()
   const { addToCart } = useCart()
   const [product, setProduct] = useState(null)
+  const [colors, setColors] = useState([])
+  const [selectedColorIdx, setSelectedColorIdx] = useState(0)
+  const [selectedImageIdx, setSelectedImageIdx] = useState(0)
   const [loading, setLoading] = useState(true)
   const [qty, setQty] = useState(1)
   const [added, setAdded] = useState(false)
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase
+      const { data: prod } = await supabase
         .from('products')
         .select('*')
         .eq('id', id)
         .eq('is_active', true)
         .single()
-      setProduct(data)
+      setProduct(prod)
+      // Try loading colors (tables may not exist yet)
+      const { data: cols } = await supabase
+        .from('product_colors')
+        .select('*, product_images(*)')
+        .eq('product_id', id)
+        .order('position')
+      const sortedColors = (cols || []).map(c => ({
+        ...c,
+        product_images: (c.product_images || []).sort((a, b) => a.position - b.position),
+      }))
+      setColors(sortedColors)
+      setSelectedColorIdx(0)
+      setSelectedImageIdx(0)
       setLoading(false)
     }
     load()
@@ -48,9 +64,27 @@ export default function ProductDetail() {
   }
 
   const orderable = isOrderable(product.category)
+  const hasColors = colors.length > 0
+  const activeColor = hasColors ? colors[selectedColorIdx] : null
+  const activeImages = activeColor?.product_images || []
+  const mainImage = activeImages.length > 0
+    ? activeImages[selectedImageIdx]?.image_url
+    : product.image_url
+
+  // Stock based on selected color or product
+  const stockQty = activeColor ? activeColor.stock_qty : product.stock_qty
+
+  function handleColorSelect(idx) {
+    setSelectedColorIdx(idx)
+    setSelectedImageIdx(0)
+  }
 
   function handleAdd() {
-    addToCart(product, qty)
+    addToCart(
+      { ...product, image_url: mainImage || product.image_url },
+      qty,
+      activeColor ? { id: activeColor.id, color_name: activeColor.color_name } : null
+    )
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
@@ -77,15 +111,37 @@ export default function ProductDetail() {
       {/* Product — 50/50 layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[70vh]">
         {/* Image — light gray bg */}
-        <div className="bg-[#f5f4f2] flex items-center justify-center p-8 sm:p-16">
-          {product.image_url ? (
-            <img
-              src={product.image_url}
-              alt={`${product.brand} ${product.name}`}
-              className="w-full h-full max-h-[600px] object-contain"
-            />
-          ) : (
-            <span className="text-gray-200 font-display text-9xl">A</span>
+        <div className="bg-[#f5f4f2] flex flex-col items-center justify-center p-8 sm:p-16">
+          {/* Main image */}
+          <div className="flex-1 flex items-center justify-center w-full">
+            {mainImage ? (
+              <img
+                src={mainImage}
+                alt={`${product.brand} ${product.name}`}
+                className="w-full h-full max-h-[600px] object-contain transition-opacity duration-300"
+              />
+            ) : (
+              <span className="text-gray-200 font-display text-9xl">A</span>
+            )}
+          </div>
+
+          {/* Thumbnails */}
+          {activeImages.length > 1 && (
+            <div className="flex gap-3 mt-6">
+              {activeImages.map((img, idx) => (
+                <button
+                  key={img.id}
+                  onClick={() => setSelectedImageIdx(idx)}
+                  className={`w-16 h-16 border-2 overflow-hidden transition-all duration-300 ${
+                    idx === selectedImageIdx
+                      ? 'border-gold'
+                      : 'border-gray-200 hover:border-gray-400'
+                  }`}
+                >
+                  <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
           )}
         </div>
 
@@ -113,9 +169,33 @@ export default function ProductDetail() {
             </div>
           )}
 
+          {/* Color selector */}
+          {hasColors && (
+            <div className="mt-8">
+              <p className="text-xs text-gray-400 font-light uppercase tracking-wider mb-3">
+                Couleur : <span className="text-[#333]">{activeColor?.color_name}</span>
+              </p>
+              <div className="flex gap-2">
+                {colors.map((color, idx) => (
+                  <button
+                    key={color.id}
+                    onClick={() => handleColorSelect(idx)}
+                    title={color.color_name}
+                    className={`w-8 h-8 rounded-full border-2 transition-all duration-300 ${
+                      idx === selectedColorIdx
+                        ? 'border-gold scale-110 shadow-sm'
+                        : 'border-gray-200 hover:border-gray-400'
+                    }`}
+                    style={{ backgroundColor: color.color_hex || '#ccc' }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Availability */}
           <div className="mt-6">
-            {product.stock_qty > 0 ? (
+            {stockQty > 0 ? (
               <span className="inline-flex items-center gap-2 text-xs font-light text-green-600">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
                 En stock

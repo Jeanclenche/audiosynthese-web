@@ -111,6 +111,7 @@ export default function OrderForm() {
       const lineRows = items.map(item => ({
         invoice_id: invoice.id,
         product_id: item.product_id,
+        product_color_id: item.color_id || null,
         qty: item.qty,
         unit_price_cents: item.price_cents,
         discount_cents: 0,
@@ -120,25 +121,54 @@ export default function OrderForm() {
       const { error: lineErr } = await supabase.from('invoice_lines').insert(lineRows)
       if (lineErr) throw lineErr
 
+      // Decrement stock
       for (const item of items) {
-        const { data: prod } = await supabase
-          .from('products')
-          .select('stock_qty')
-          .eq('id', item.product_id)
-          .single()
-        if (prod) {
-          await supabase
+        if (item.color_id) {
+          // Decrement color stock
+          const { data: freshColor } = await supabase
+            .from('product_colors')
+            .select('stock_qty')
+            .eq('id', item.color_id)
+            .single()
+          if (freshColor) {
+            await supabase
+              .from('product_colors')
+              .update({ stock_qty: Math.max(0, freshColor.stock_qty - item.qty) })
+              .eq('id', item.color_id)
+          }
+          // Recalc product total stock
+          const { data: allColors } = await supabase
+            .from('product_colors')
+            .select('stock_qty')
+            .eq('product_id', item.product_id)
+          if (allColors) {
+            const totalStock = allColors.reduce((s, c) => s + c.stock_qty, 0)
+            await supabase
+              .from('products')
+              .update({ stock_qty: totalStock })
+              .eq('id', item.product_id)
+          }
+        } else {
+          // No color: decrement product stock directly
+          const { data: prod } = await supabase
             .from('products')
-            .update({ stock_qty: Math.max(0, prod.stock_qty - item.qty) })
+            .select('stock_qty')
             .eq('id', item.product_id)
-          await supabase.from('stock_movements').insert({
-            product_id: item.product_id,
-            delta: -item.qty,
-            reason: 'web_order',
-            note: `Commande web ${invoiceNumber}`,
-            ref_invoice_id: invoice.id,
-          })
+            .single()
+          if (prod) {
+            await supabase
+              .from('products')
+              .update({ stock_qty: Math.max(0, prod.stock_qty - item.qty) })
+              .eq('id', item.product_id)
+          }
         }
+        await supabase.from('stock_movements').insert({
+          product_id: item.product_id,
+          delta: -item.qty,
+          reason: 'web_order',
+          note: `Commande web ${invoiceNumber}`,
+          ref_invoice_id: invoice.id,
+        })
       }
 
       clearCartItems()
@@ -253,9 +283,12 @@ export default function OrderForm() {
 
             <div className="space-y-4">
               {items.map(item => (
-                <div key={item.product_id} className="flex justify-between text-sm font-light">
+                <div key={`${item.product_id}_${item.color_id || ''}`} className="flex justify-between text-sm font-light">
                   <div className="min-w-0 flex-1">
                     <p className="text-[#333] truncate">{item.name}</p>
+                    {item.color_name && (
+                      <p className="text-gray-400 text-xs">{item.color_name}</p>
+                    )}
                     <p className="text-gray-400 text-xs">x{item.qty}</p>
                   </div>
                   <span className="text-[#333] ml-4">{fmtEur(item.price_cents * item.qty)}</span>

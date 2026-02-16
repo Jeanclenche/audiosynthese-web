@@ -50,7 +50,7 @@ export default function Header() {
             >
               <ShoppingBag size={20} strokeWidth={1.5} />
               {count > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 bg-gold text-white text-[9px] font-medium rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold text-white text-[10px] font-semibold rounded-full flex items-center justify-center shadow-sm">
                   {count}
                 </span>
               )}
