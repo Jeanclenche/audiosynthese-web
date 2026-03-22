@@ -23,7 +23,7 @@ function getColorSwatches(product) {
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart()
-  const orderable = isOrderable(product.category)
+  const orderable = isOrderable(product)
   const imageUrl = getProductImage(product)
   const swatches = getColorSwatches(product)
 
@@ -89,7 +89,7 @@ export default function ProductCard({ product }) {
               to="/contact"
               className="text-[10px] uppercase tracking-[0.15em] font-light text-gold/70 hover:text-gold transition-colors duration-300"
             >
-              Sur demande
+              À découvrir en magasin
             </Link>
           )}
         </div>

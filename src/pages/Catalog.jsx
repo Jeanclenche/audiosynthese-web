@@ -19,6 +19,7 @@ export default function Catalog() {
         .from('products')
         .select('*, product_colors(*, product_images(*))')
         .eq('is_active', true)
+        .or('published_online.eq.true,store_only.eq.true')
         .order('brand')
         .order('name')
 
@@ -33,7 +34,7 @@ export default function Catalog() {
       let { data, error } = await query
       // Fallback if color tables don't exist yet
       if (error) {
-        let fallback = supabase.from('products').select('*').eq('is_active', true).order('brand').order('name')
+        let fallback = supabase.from('products').select('*').eq('is_active', true).or('published_online.eq.true,store_only.eq.true').order('brand').order('name')
         if (category) {
           if (category === 'cables') fallback = fallback.in('category', ['cables', 'accessories'])
           else fallback = fallback.eq('category', category)

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ShoppingBag, ArrowLeft, Phone } from 'lucide-react'
+import { ShoppingBag, ArrowLeft } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { fmtEur, catLabel } from '../lib/format'
 import { isOrderable } from '../lib/constants'
@@ -24,6 +24,7 @@ export default function ProductDetail() {
         .select('*')
         .eq('id', id)
         .eq('is_active', true)
+        .or('published_online.eq.true,store_only.eq.true')
         .single()
       setProduct(prod)
       // Try loading colors (tables may not exist yet)
@@ -63,7 +64,7 @@ export default function ProductDetail() {
     )
   }
 
-  const orderable = isOrderable(product.category)
+  const orderable = isOrderable(product)
   const hasColors = colors.length > 0
   const activeColor = hasColors ? colors[selectedColorIdx] : null
   const activeImages = activeColor?.product_images || []
@@ -173,7 +174,7 @@ export default function ProductDetail() {
           {hasColors && (
             <div className="mt-8">
               <p className="text-xs text-gray-400 font-light uppercase tracking-wider mb-3">
-                Couleur : <span className="text-[#333]">{activeColor?.color_name}</span>
+                Déclinaison : <span className="text-[#333]">{activeColor?.color_name}</span>
               </p>
               <div className="flex gap-2">
                 {colors.map((color, idx) => (
@@ -245,14 +246,13 @@ export default function ProductDetail() {
             ) : (
               <div className="space-y-5">
                 <p className="text-sm text-gray-400 font-light leading-relaxed">
-                  Ce produit est disponible en magasin. Contactez-nous pour une demonstration ou un devis personnalise.
+                  {product.store_only
+                    ? 'Ce produit est à découvrir en magasin. Contactez-nous pour une démonstration ou un devis personnalisé.'
+                    : 'Contactez-nous pour plus d\'informations sur ce produit.'
+                  }
                 </p>
-                <Link
-                  to="/contact"
-                  className="btn-luxury-dark w-full"
-                >
-                  <Phone size={16} strokeWidth={1.5} />
-                  Nous contacter
+                <Link to="/contact" className="btn-luxury-dark w-full">
+                  À découvrir en magasin
                 </Link>
               </div>
             )}

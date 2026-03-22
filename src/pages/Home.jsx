@@ -20,6 +20,7 @@ export default function Home() {
         .from('products')
         .select('*')
         .eq('is_active', true)
+        .or('published_online.eq.true,store_only.eq.true')
         .order('created_at', { ascending: false })
         .limit(8)
       setFeatured(data || [])

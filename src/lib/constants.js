@@ -1,9 +1,4 @@
-// Categories vitrine : affichage uniquement, bouton "Nous contacter"
-export const VITRINE_CATEGORIES = ['speakers', 'amplifiers', 'dac', 'headphones']
-
-// Categories commandables : ajout au panier possible
-export const ORDERABLE_CATEGORIES = ['cables', 'accessories']
-
-export function isOrderable(category) {
-  return ORDERABLE_CATEGORIES.includes(category)
+// Un produit est commandable en ligne si published_online est true
+export function isOrderable(product) {
+  return product.published_online === true
 }
